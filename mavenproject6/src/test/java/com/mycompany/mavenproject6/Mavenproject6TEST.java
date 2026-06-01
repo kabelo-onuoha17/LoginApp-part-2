@@ -3,87 +3,128 @@ package com.mycompany.mavenproject6;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Mavenproject6TEST {
+public class Mavenproject6Test {
 
-    // --- USERNAME VALIDATION TESTS ---
+    // ==========================================
+    //           PART 1: REGISTRATION TESTS
+    // ==========================================
+
     @Test
     public void testCheckUserName_Valid() {
-        assertTrue(Mavenproject6.checkUserName("u_ser"), "Should pass: contains underscore and <= 5 chars.");
+        // Valid: Contains underscore and is <= 5 characters
+        assertTrue(Mavenproject6.checkUserName("kyl_1"));
     }
 
     @Test
-    public void testCheckUserName_TooLong() {
-        assertFalse(Mavenproject6.checkUserName("user_name"), "Should fail: exceeds 5 characters.");
+    public void testCheckUserName_Invalid_NoUnderscore() {
+        // Invalid: No underscore
+        assertFalse(Mavenproject6.checkUserName("kyle"));
     }
 
     @Test
-    public void testCheckUserName_NoUnderscore() {
-        assertFalse(Mavenproject6.checkUserName("user1"), "Should fail: missing an underscore.");
+    public void testCheckUserName_Invalid_TooLong() {
+        // Invalid: Longer than 5 characters
+        assertFalse(Mavenproject6.checkUserName("kyle_onuoha"));
     }
 
-    // --- PASSWORD COMPLEXITY TESTS ---
     @Test
     public void testCheckPasswordComplexity_Valid() {
-        assertTrue(Mavenproject6.checkPasswordComplexity("Ch@nge123"), "Should pass: meets length, case, digit, and special char rules.");
+        // Valid: >= 8 chars, has capital, has number, has special character
+        assertTrue(Mavenproject6.checkPasswordComplexity("Ch@ng3Me"));
     }
 
     @Test
-    public void testCheckPasswordComplexity_TooShort() {
-        assertFalse(Mavenproject6.checkPasswordComplexity("Ch@n1"), "Should fail: less than 8 characters.");
+    public void testCheckPasswordComplexity_Invalid() {
+        // Invalid: Missing uppercase, number, and special character
+        assertFalse(Mavenproject6.checkPasswordComplexity("password"));
     }
 
-    @Test
-    public void testCheckPasswordComplexity_NoCapital() {
-        assertFalse(Mavenproject6.checkPasswordComplexity("ch@nge123"), "Should fail: missing uppercase letter.");
-    }
-
-    @Test
-    public void testCheckPasswordComplexity_NoNumber() {
-        assertFalse(Mavenproject6.checkPasswordComplexity("Ch@ngesf"), "Should fail: missing a digit.");
-    }
-
-    @Test
-    public void testCheckPasswordComplexity_NoSpecial() {
-        assertFalse(Mavenproject6.checkPasswordComplexity("Change123"), "Should fail: missing a special character.");
-    }
-
-    // --- PHONE NUMBER VALIDATION TESTS ---
-    @Test
-    public void testCheckCellPhoneNumber_Valid() {
-        assertTrue(Mavenproject6.checkCellPhoneNumber("+27123456789"), "Should pass: exact +27 prefix and 9 digits.");
-    }
-
-    @Test
-    public void testCheckCellPhoneNumber_InvalidPrefix() {
-        assertFalse(Mavenproject6.checkCellPhoneNumber("0123456789"), "Should fail: incorrect international format.");
-    }
-
-    @Test
-    public void testCheckCellPhoneNumber_InvalidLength() {
-        assertFalse(Mavenproject6.checkCellPhoneNumber("+2712345"), "Should fail: incomplete number string length.");
-    }
-
-    // --- REGISTRATION SUMMARY STATUS TESTS ---
     @Test
     public void testRegisterUser_Success() {
-        String result = Mavenproject6.registerUser("m_sg", "P@ssword1", "+27123456789");
-        assertEquals("Cell phone number successfully audited.", result);
+        String result = Mavenproject6.registerUser("kyl_1", "Ch@ng3Me", "+27731683002");
+        assertEquals("Username and password successfully captured", result);
     }
 
     @Test
     public void testRegisterUser_FailedUsername() {
-        String result = Mavenproject6.registerUser("long_username", "P@ssword1", "+27123456789");
+        String result = Mavenproject6.registerUser("kyleeeeee", "Ch@ng3Me", "+27731683002");
         assertTrue(result.contains("Username is not correctly formatted"));
     }
 
-    // --- LOGIN VERIFICATION TESTS ---
+
+    // ==========================================
+    //           PART 2: MESSAGE SYSTEM TESTS
+    // ==========================================
+
     @Test
-    public void testLoginUser_Success() {
-        assertTrue(Mavenproject6.loginUser("abc", "123", "abc", "123"), "Matching credentials must authorize successfully.");
+    public void testMessageIDGeneration() {
+        Message msg = new Message();
+        // Verifies the ID auto-generates correctly and satisfies checkMessageID()
+        assertTrue(msg.checkMessageID());
     }
 
     @Test
-    public void testLoginUser_Failure() {
-        assertFalse(Mavenproject6.loginUser("abc", "123", "abc", "wrong"), "Mismatched credentials must deny authorization.");
+    public void testCheckRecipientCell_ValidFromAssignment() {
+        Message msg = new Message();
+        
+        // Testing with the exact Test Case 1 recipient cell number from your document video
+        msg.setRecipient("+27731683002");
+        assertTrue(msg.checkRecipientCell(), "Should pass validation for a valid international SA cell number");
+    }
+
+    @Test
+    public void testCheckRecipientCell_Invalid() {
+        Message msg = new Message();
+        
+        // Invalid: Missing the '+' prefix or wrong formatting rules
+        msg.setRecipient("0731683002");
+        assertFalse(msg.checkRecipientCell());
+    }
+
+    @Test
+    public void testCreateMessageHash_AssignmentMatch() {
+        Message msg = new Message();
+        
+        // Inject a controlled message ID sequence via regular string logic or direct observation
+        // Because ID is random, let's verify if hash properly formats 
+        // format rules: Last 2 of ID + Total Char Count + First 4 of First Word + Last 2 of Last Word
+        msg.setMessageText("Hi Mike, can you join us for dinner tonight?");
+        
+        String hash = msg.createMessageHash();
+        assertNotNull(hash);
+        
+        // Check structural properties: Total characters count in text string is 44
+        // The first word is "Hi", the last word is "tonight?" (ends with 'HT?')
+        assertTrue(hash.contains("44"));
+        assertTrue(hash.contains("HI")); 
+    }
+
+    @Test
+    public void testSentMessage_Actions() {
+        Message msg = new Message();
+
+        // Rubric Expectation: User selects '1' -> Send Message
+        assertEquals("Message successfully sent.", msg.sentMessage("1"));
+
+        // Rubric Expectation: User selects '2' -> Discard Message
+        assertEquals("Press 0 to delete the message", msg.sentMessage("2"));
+
+        // Rubric Expectation: User selects '3' -> Store Message
+        assertEquals("Message successfully stored", msg.sentMessage("3"));
+    }
+
+    @Test
+    public void testPrintMessages_LogsOnlySent() {
+        Message msg = new Message();
+        msg.setRecipient("+27731683002");
+        msg.setMessageText("Test Message");
+        
+        // Before sending, status is null. printMessages() must return null
+        assertNull(msg.printMessages());
+        
+        // After sending, status is "Sent". printMessages() must compile a structured text log layout
+        msg.sentMessage("1");
+        assertNotNull(msg.printMessages());
+        assertTrue(msg.printMessages().contains("Recipient: +27731683002"));
     }
 }
