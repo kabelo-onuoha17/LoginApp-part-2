@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 // PART 1: LOGIN & REGISTRATION CLASS
+
 public class Mavenproject6 {
 
     public static boolean checkUserName(String username) {
@@ -47,7 +48,7 @@ public class Mavenproject6 {
         return savedUsername.equals(enteredUsername) && savedPassword.equals(enteredPassword);
     }
 
-    // --- MAIN PROGRAM CONTROL FLOW ---
+         //MAIN PROGRAM CONTROL FLOW 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 
@@ -79,7 +80,7 @@ public class Mavenproject6 {
                 System.out.println("Welcome to QuickChat.");
                 System.out.println("How many messages do you want to send?");
                 int numMessages = input.nextInt();
-                input.nextLine(); // Clear scanner buffer
+                input.nextLine();
 
                 boolean chatRunning = true;
                 Message[] messageLog = new Message[numMessages];
@@ -102,7 +103,7 @@ public class Mavenproject6 {
                         System.out.println(" Message " + (currentMessageIndex + 1) + " of " + numMessages + " ---");
                         Message msg = new Message();
 
-                        // Recipient Validation Loop
+                        
                         while (true) {
                             System.out.println("Enter Recipient Cell (e.g. +27123456789):");
                             String recipient = input.nextLine();
@@ -116,7 +117,7 @@ public class Mavenproject6 {
                             }
                         }
 
-                        // Text Limit Verification Loop
+                        
                         while (true) {
                             System.out.println("Enter Message Text (max 250 chars):");
                             String text = input.nextLine();
@@ -147,7 +148,7 @@ public class Mavenproject6 {
                         currentMessageIndex++;
                     } 
                     else if (option.equals("2")) {
-                        System.out.println("--- HISTORICAL TRANSACTION LOG ---");
+                        System.out.println(" HISTORICAL TRANSACTION LOG ");
                         boolean entriesFound = false;
                         for (Message m : messageLog) {
                             if (m != null && m.printMessages() != null) {
@@ -176,8 +177,8 @@ public class Mavenproject6 {
         input.close();
     }
 }
-
-// PART 2: OBJECT-ORIENTED MESSAGE CLASS
+   
+   //PART 2 OOP
 class Message {
     private String messageID;
     private String recipient;
@@ -195,7 +196,7 @@ class Message {
         return this.messageID.length() <= 10;
     }
 
-    // FIXED: Corrected length constraint checks to ensure validation passes Test Case 1 & 2 values
+    
     public boolean checkRecipientCell() {
         if (this.recipient == null) return false;
         
@@ -224,7 +225,7 @@ class Message {
         return compositeHash.toUpperCase();
     }
 
-    // FIXED: Modified literal string responses to mirror your assignment automated test targets
+
     public String sentMessage(String option) {
         if (option.equals("1")) {
             totalMessages++;
@@ -259,7 +260,7 @@ class Message {
         return totalMessages;
     }
 
-    // SETTERS
+    
     public void setRecipient(String recipient) { 
         this.recipient = recipient; 
     }
